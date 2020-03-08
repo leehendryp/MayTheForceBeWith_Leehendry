@@ -2,7 +2,6 @@ package com.leehendryp.maytheforcebewithleehendry.feed.data.local
 
 import com.leehendryp.maytheforcebewithleehendry.core.utils.coTryCatch
 import com.leehendryp.maytheforcebewithleehendry.core.utils.io
-import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSavePeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
@@ -22,12 +21,6 @@ class LocalDataSourceImpl @Inject constructor(
         dispatcher = io(),
         onTry = { People(count = getLocalCharacters().size, people = getLocalCharacters()) },
         onCatch = { CouldNotFetchPeopleError(LOCAL_SOURCE_ERROR, it) }
-    )
-
-    override suspend fun fetchCharacterBy(id: Int): Character = coTryCatch(
-        dispatcher = io(),
-        onTry = { getLocalCharacters().find { character -> character.id == id }!! },
-        onCatch = { CouldNotFetchCharacterError(LOCAL_SOURCE_ERROR, it) }
     )
 
     override suspend fun searchCharacterBy(name: String): People = coTryCatch(

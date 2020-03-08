@@ -9,7 +9,6 @@ import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.SERVER_ERROR
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToId
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToPageNumber
-import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
@@ -105,36 +104,6 @@ class RemoteDataSourceImplTest : BaseNetworkTest() {
         runBlocking {
             setResponse(SERVER_ERROR)
             dataSource.fetchPeople(1)
-        }
-    }
-
-    @Test
-    fun `should fetch character by id from API upon successful request`() {
-        runBlocking {
-            setResponse(SUCCESS, CHARACTER_JSON)
-
-            mockkObject(UriParser)
-            every { parseToId(any()) } returns mockId
-
-            val result: Character? = dataSource.fetchCharacterBy(mockId)
-
-            assertThat(result, equalTo(dummyOne))
-        }
-    }
-
-    @Test(expected = CouldNotFetchCharacterError::class)
-    fun `should throw exception if it fails to properly request a character response from API`() {
-        runBlocking {
-            setResponse(CLIENT_ERROR)
-            dataSource.fetchCharacterBy(mockId)
-        }
-    }
-
-    @Test(expected = CouldNotFetchCharacterError::class)
-    fun `should throw exception if there is a server error upon character request`() {
-        runBlocking {
-            setResponse(SERVER_ERROR)
-            dataSource.fetchCharacterBy(mockId)
         }
     }
 

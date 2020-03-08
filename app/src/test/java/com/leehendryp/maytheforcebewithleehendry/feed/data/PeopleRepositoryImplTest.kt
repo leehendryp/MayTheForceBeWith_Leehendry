@@ -87,26 +87,6 @@ class PeopleRepositoryImplTest {
         }
 
     @Test
-    fun `should fetch character data from remote source if network is available`() =
-        coroutineRule.runBlockingTest {
-            every { networkUtils.isInternetAvailable() } returns true
-            repo.fetchCharacterBy(0)
-
-            coVerify(exactly = 0) { localDataSource.fetchCharacterBy(any()) }
-            coVerify(exactly = 1) { remoteDataSource.fetchCharacterBy(any()) }
-        }
-
-    @Test
-    fun `should fetch character data from local source if network is unavailable`() =
-        coroutineRule.runBlockingTest {
-            every { networkUtils.isInternetAvailable() } returns false
-            repo.fetchCharacterBy(0)
-
-            coVerify(exactly = 1) { localDataSource.fetchCharacterBy(any()) }
-            coVerify(exactly = 0) { remoteDataSource.fetchCharacterBy(any()) }
-        }
-
-    @Test
     fun `should matching character query data from remote source if network is available`() =
         coroutineRule.runBlockingTest {
             every { networkUtils.isInternetAvailable() } returns true

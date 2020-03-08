@@ -15,8 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".details.DetailsActivity"></activity>
         <activity
-            android:name="com.leehendryp.maytheforcebewithleehendry.feed.presentation.view.MainActivity"
+            android:name=".feed.presentation.view.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>

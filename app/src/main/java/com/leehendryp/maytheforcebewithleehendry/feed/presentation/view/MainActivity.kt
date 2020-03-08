@@ -1,5 +1,6 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.presentation.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -13,6 +14,9 @@ import com.leehendryp.maytheforcebewithleehendry.core.MayTheFoceBeWithThisApplic
 import com.leehendryp.maytheforcebewithleehendry.core.extensions.fadeIn
 import com.leehendryp.maytheforcebewithleehendry.core.extensions.vanish
 import com.leehendryp.maytheforcebewithleehendry.databinding.ActivityMainBinding
+import com.leehendryp.maytheforcebewithleehendry.details.DetailsActivity
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character.Companion.CHARACTER
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Success
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Error
@@ -39,12 +43,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        feedAdapter = FeedAdapter(mutableSetOf())
+        feedAdapter = FeedAdapter(mutableSetOf()) { showCharacterDetails(it) }
 
         binding.recyclerviewCharacters.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = feedAdapter
-            addOnScrollListener(EndlessOnScrollListener { feedViewModel.fetchPeople() })
+            loadMore { feedViewModel.fetchPeople() }
         }
     }
 
@@ -76,6 +80,12 @@ class MainActivity : AppCompatActivity() {
         binding.containerLoadingWheel.apply {
             if (feedViewModel.state.value == Loading) fadeIn(animDuration) else vanish(animDuration)
         }
+    }
+
+    private fun showCharacterDetails(character: Character) {
+        val intent = Intent(this, DetailsActivity::class.java)
+        intent.putExtra(CHARACTER, character)
+        startActivity(intent)
     }
 
     private fun RecyclerView.loadMore(onLoadMore: () -> Unit) {
