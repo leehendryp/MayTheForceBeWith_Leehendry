@@ -1,7 +1,8 @@
-package com.leehendryp.maytheforcebewith_leehendry
+package com.leehendryp.maytheforcebewithleehendry
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.leehendryp.maytheforcebewith_leehendry.R
 
 class MainActivity : AppCompatActivity() {
 
