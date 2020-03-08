@@ -90,25 +90,6 @@ class LocalDataSourceImplTest {
     }
 
     @Test
-    fun `should fetch character from database upon id provision`() {
-        runBlocking {
-            coEvery { roomPeopleDao.getAll() } returns roomPeople
-
-            val anakin = dataSource.fetchCharacterBy(99999)
-
-            assertThat(anakin, equalTo(dummyOne))
-        }
-    }
-
-    @Test(expected = CouldNotFetchCharacterError::class)
-    fun `should throw exception if local character by id fetch fails to be fulfilled`() {
-        runBlocking {
-            coEvery { roomPeopleDao.getAll() } returns roomPeople
-            dataSource.fetchCharacterBy(1)
-        }
-    }
-
-    @Test
     fun `should fetch character from database upon name search`() {
         runBlocking {}
     }
