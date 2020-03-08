@@ -58,7 +58,7 @@
         android:paddingTop="@dimen/two_measures_small"
         android:paddingBottom="@dimen/two_measures"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/item_character" />
+        tools:listitem="@layout/item_feed" />
 
     <FrameLayout
         android:id="@+id/container_loading_wheel"
@@ -69,11 +69,11 @@
         android:visibility="visible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <ProgressBar
-                android:id="@+id/loading_wheel"
-                android:layout_width="@dimen/six_measures"
-                android:layout_height="@dimen/six_measures"
-                android:layout_gravity="center" />
+        <ProgressBar
+            android:id="@+id/loading_wheel"
+            android:layout_width="@dimen/six_measures"
+            android:layout_height="@dimen/six_measures"
+            android:layout_gravity="center" />
     </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
