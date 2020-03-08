@@ -2,7 +2,6 @@ package com.leehendryp.maytheforcebewithleehendry.feed.data.local
 
 import com.leehendryp.maytheforcebewithleehendry.core.utils.coTryCatch
 import com.leehendryp.maytheforcebewithleehendry.core.utils.io
-import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSavePeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError

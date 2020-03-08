@@ -2,7 +2,6 @@ package com.leehendryp.maytheforcebewithleehendry.feed.data.local
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
-import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.LocalDataSource
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character

@@ -2,7 +2,6 @@ package com.leehendryp.maytheforcebewithleehendry.feed.data
 
 import com.leehendryp.maytheforcebewithleehendry.core.utils.NetworkUtils
 import com.leehendryp.maytheforcebewithleehendry.feed.data.remote.RemoteDataSource
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.PeopleRepository
 import javax.inject.Inject

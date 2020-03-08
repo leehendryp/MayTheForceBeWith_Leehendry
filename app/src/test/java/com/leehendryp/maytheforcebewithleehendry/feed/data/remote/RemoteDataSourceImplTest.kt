@@ -9,7 +9,6 @@ import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.SERVER_ERROR
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToId
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToPageNumber
-import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character

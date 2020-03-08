@@ -2,12 +2,9 @@ package com.leehendryp.maytheforcebewithleehendry.feed.data.remote
 
 import com.leehendryp.maytheforcebewithleehendry.core.StarWarsApi
 import com.leehendryp.maytheforcebewithleehendry.core.utils.coTryCatch
-import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
-import com.leehendryp.maytheforcebewithleehendry.feed.data.toCharacter
 import com.leehendryp.maytheforcebewithleehendry.feed.data.toPeople
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
 import javax.inject.Inject
 

@@ -1,6 +1,5 @@
 package com.leehendryp.maytheforcebewithleehendry.core
 
-import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.CharacterResponse
 import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PeopleResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
