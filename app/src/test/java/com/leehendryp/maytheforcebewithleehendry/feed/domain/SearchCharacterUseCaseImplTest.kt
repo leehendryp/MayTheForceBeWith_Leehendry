@@ -5,7 +5,6 @@ import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
 import io.mockk.coVerify
 import io.mockk.spyk
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

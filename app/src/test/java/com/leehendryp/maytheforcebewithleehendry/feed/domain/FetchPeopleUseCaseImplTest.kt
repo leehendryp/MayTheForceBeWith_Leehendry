@@ -2,14 +2,10 @@ package com.leehendryp.maytheforcebewithleehendry.feed.domain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
-import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.any
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

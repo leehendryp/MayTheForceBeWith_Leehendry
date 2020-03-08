@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.leehendryp.maytheforcebewithleehendry.R
 import com.leehendryp.maytheforcebewithleehendry.core.MayTheFoceBeWithThisApplication
 import com.leehendryp.maytheforcebewithleehendry.core.extensions.fadeIn
-import com.leehendryp.maytheforcebewithleehendry.core.extensions.fadeOut
 import com.leehendryp.maytheforcebewithleehendry.core.extensions.vanish
 import com.leehendryp.maytheforcebewithleehendry.databinding.ActivityMainBinding
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState
