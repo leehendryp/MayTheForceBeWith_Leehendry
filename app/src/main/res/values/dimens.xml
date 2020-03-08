@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="no_measure">0dp</dimen>
+    <dimen name="one_measure">8dp</dimen>
+    <dimen name="two_measures">16dp</dimen>
+    <dimen name="three_measures">24dp</dimen>
+    <dimen name="four_measures">32dp</dimen>
+    <dimen name="five_measures">40dp</dimen>
+    <dimen name="six_measures">48dp</dimen>
+    <dimen name="seven_measures">56dp</dimen>
+    <dimen name="eight_measures">64dp</dimen>
+    <dimen name="nine_measures">72dp</dimen>
+    <dimen name="ten_measures">80dp</dimen>
+
+    <dimen name="one_measure_small">4dp</dimen>
+    <dimen name="two_measures_small">12dp</dimen>
+    <dimen name="three_measures_small">20dp</dimen>
+    <dimen name="four_measures_small">28dp</dimen>
+    <dimen name="five_measures_small">36dp</dimen>
+    <dimen name="six_measures_small">44dp</dimen>
+    <dimen name="seven_measures_small">52dp</dimen>
+    <dimen name="eight_measures_small">60dp</dimen>
+    <dimen name="nine_measures_small">68dp</dimen>
+    <dimen name="ten_measures_small">76dp</dimen>
+
+    <dimen name="default_line_size">1dp</dimen>
+
+    <dimen name="touch_target_size">48dp</dimen>
+</resources>
