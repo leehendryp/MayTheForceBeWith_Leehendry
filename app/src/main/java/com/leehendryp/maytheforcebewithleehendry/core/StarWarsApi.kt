@@ -14,11 +14,6 @@ interface StarWarsApi {
     ): PeopleResponse
 
     @GET("people/")
-    suspend fun fetchCharacterBy(
-        @Query("id") id: Int
-    ): CharacterResponse
-
-    @GET("people/")
     suspend fun searchCharacterBy(
         @Query("search") name: String
     ): PeopleResponse

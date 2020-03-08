@@ -24,12 +24,6 @@ class LocalDataSourceImpl @Inject constructor(
         onCatch = { CouldNotFetchPeopleError(LOCAL_SOURCE_ERROR, it) }
     )
 
-    override suspend fun fetchCharacterBy(id: Int): Character = coTryCatch(
-        dispatcher = io(),
-        onTry = { getLocalCharacters().find { character -> character.id == id }!! },
-        onCatch = { CouldNotFetchCharacterError(LOCAL_SOURCE_ERROR, it) }
-    )
-
     override suspend fun searchCharacterBy(name: String): People = coTryCatch(
         dispatcher = io(),
         onTry = { getLocalCharactersBy(name) },

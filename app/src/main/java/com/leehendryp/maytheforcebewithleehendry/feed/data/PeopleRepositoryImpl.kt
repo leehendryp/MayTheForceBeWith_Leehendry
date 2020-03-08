@@ -25,11 +25,6 @@ class PeopleRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchCharacterBy(id: Int): Character {
-        return if (networkUtils.isInternetAvailable()) remoteDataSource.fetchCharacterBy(id)
-        else localDataSource.fetchCharacterBy(id)
-    }
-
     override suspend fun searchCharacterBy(name: String): People {
         return if (networkUtils.isInternetAvailable()) remoteDataSource.searchCharacterBy(name)
         else localDataSource.searchCharacterBy(name)

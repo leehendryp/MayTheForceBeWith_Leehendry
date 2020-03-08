@@ -21,11 +21,6 @@ class RemoteDataSourceImpl @Inject constructor(private val api: StarWarsApi) : R
         { CouldNotFetchPeopleError(REMOTE_SOURCE_ERROR, it) }
     )
 
-    override suspend fun fetchCharacterBy(id: Int): Character = coTryCatch(
-        { api.fetchCharacterBy(id).toCharacter() },
-        { CouldNotFetchCharacterError(REMOTE_SOURCE_ERROR, it) }
-    )
-
     override suspend fun searchCharacterBy(name: String): People = coTryCatch(
         { api.searchCharacterBy(name).toPeople() },
         { CouldNotSearchCharacterError(REMOTE_SOURCE_ERROR, it) }
