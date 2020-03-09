@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.FetchPeopleUseCase
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.SaveFavoriteUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.SearchCharacterUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -12,7 +14,8 @@ import javax.inject.Inject
 
 class FeedViewModel @Inject constructor(
     private val fetchPeopleUseCase: FetchPeopleUseCase,
-    private val searchCharacterUseCase: SearchCharacterUseCase
+    private val searchCharacterUseCase: SearchCharacterUseCase,
+    private val saveFavoriteUseCase: SaveFavoriteUseCase
 ) : ViewModel() {
     private val _state by lazy { MutableLiveData<FeedState>().apply { toDefault() } }
     val state: LiveData<FeedState> = _state
@@ -44,6 +47,10 @@ class FeedViewModel @Inject constructor(
         }
 
         resetPage()
+    }
+
+    fun saveFavorite(character: Character) = launchDataLoad {
+        saveFavoriteUseCase.execute(character)
     }
 
     private fun resetPage() {
