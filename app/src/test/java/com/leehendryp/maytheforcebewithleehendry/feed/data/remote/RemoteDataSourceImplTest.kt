@@ -6,24 +6,36 @@ import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
 import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.SUCCESS
 import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.CLIENT_ERROR
 import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.SERVER_ERROR
+import com.leehendryp.maytheforcebewithleehendry.core.StarWarsApi
+import com.leehendryp.maytheforcebewithleehendry.core.WebhookApi
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToId
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToPageNumber
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
+import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.CharacterResponse
+import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PeopleResponse
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
+import com.squareup.okhttp.mockwebserver.MockWebServer
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import okhttp3.OkHttpClient
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 private const val PEOPLE_JSON = "PeopleResponse.json"
-private const val CHARACTER_JSON = "CharacterResponse.json"
 private const val SEARCH_JSON = "SearchPeopleResponse.json"
 
 // FIXME: Lee Mar 2st, 2020: runBlockingTest API has a known issue (#1204 and #1626). Refactor tests when API is fixed
@@ -39,6 +51,7 @@ class RemoteDataSourceImplTest : BaseNetworkTest() {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var dataSource: RemoteDataSource
+    private val webhookApi: WebhookApi = mockk()
 
     private val mockId = 99999
 
@@ -75,7 +88,7 @@ class RemoteDataSourceImplTest : BaseNetworkTest() {
     @Test
     override fun setUp() {
         super.setUp()
-        dataSource = RemoteDataSourceImpl(api)
+        dataSource = RemoteDataSourceImpl(api, webhookApi)
     }
 
     @Test
@@ -109,7 +122,17 @@ class RemoteDataSourceImplTest : BaseNetworkTest() {
 
     @Test
     fun `should fetch search people from API upon successful request`() {
-        runBlocking {}
+        runBlocking {
+            mockkObject(UriParser)
+            every { parseToId(any()) } returns mockId
+            every { parseToPageNumber(any()) } returns 3
+
+            setResponse(SUCCESS, SEARCH_JSON)
+
+            val result: People = dataSource.searchCharacterBy("")
+
+            assertThat(result, equalTo(dummies))
+        }
     }
 
     @Test(expected = CouldNotSearchCharacterError::class)
