@@ -46,6 +46,6 @@ On your smartphone:
 * Karma commit pattern - semantic commit message pattern, to allow for understandable development history; and
 * Git hooks - commit and pre-push git hooks to ensure that the code obeys linter, commit pattern and test rules, before integrating it to the codebase.
 
-# Autor
+# Author
 
 * **Leehendry Pauletto**
