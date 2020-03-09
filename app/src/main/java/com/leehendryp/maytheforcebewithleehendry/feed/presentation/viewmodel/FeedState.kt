@@ -6,11 +6,13 @@ import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Fee
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Loading
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Success
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Default
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Search
 
 sealed class FeedState {
     object Default : FeedState()
     object Loading : FeedState()
     data class Success(val data: List<Character>) : FeedState()
+    object Search : FeedState()
     data class Error(val error: Throwable) : FeedState()
 }
 
@@ -21,5 +23,9 @@ fun MutableLiveData<FeedState>.toDefault() {
 fun MutableLiveData<FeedState>.toLoading() = postValue(Loading)
 
 fun MutableLiveData<FeedState>.toSuccess(data: List<Character>) = postValue(Success(data))
+
+fun MutableLiveData<FeedState>.toSearch() {
+    value = Search
+}
 
 fun MutableLiveData<FeedState>.toError(error: Throwable) = postValue(Error(error))
