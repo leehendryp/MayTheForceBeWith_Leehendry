@@ -4,8 +4,8 @@ import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PeopleRespon
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-const val BASE_URL = "https://swapi.co/api/"
-const val PEOPLE_ENDPOINT = "people/"
+const val STAR_WARS_BASE_URL = "https://swapi.co/api/"
+private const val PEOPLE_ENDPOINT = "people/"
 
 interface StarWarsApi {
     @GET(PEOPLE_ENDPOINT)

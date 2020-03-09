@@ -47,7 +47,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        feedAdapter = FeedAdapter(mutableSetOf()) { showCharacterDetails(it) }
+        feedAdapter = FeedAdapter(mutableSetOf(),
+            onClick = { showCharacterDetails(it) },
+            onSaveFavorite = { saveFavorite(it) }
+        )
 
         binding.recyclerviewCharacters.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -58,10 +61,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSearchView() {
         binding.searchBar
-        .apply {
-            doOnQuerySubmit { feedViewModel.searchCharacterBy(it) }
-            setOnQueryTextFocusChangeListener { _, hasFocus -> if (!hasFocus) feedViewModel.fetchPeople() }
-        }
+            .apply {
+                doOnQuerySubmit { feedViewModel.searchCharacterBy(it) }
+                setOnQueryTextFocusChangeListener { _, hasFocus -> if (!hasFocus) feedViewModel.fetchPeople() }
+            }
     }
 
     private fun injectDependencies() =
@@ -102,6 +105,8 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra(CHARACTER, character)
         startActivity(intent)
     }
+
+    private fun saveFavorite(character: Character) = feedViewModel.saveFavorite(character)
 
     private fun RecyclerView.doOnScrollToEnd(onLoadMore: () -> Unit) {
         this.addOnScrollListener(EndlessOnScrollListener(onLoadMore))

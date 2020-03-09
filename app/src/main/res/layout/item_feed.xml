@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_card"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/two_measures"
@@ -12,15 +12,39 @@
     android:orientation="horizontal"
     app:cardCornerRadius="@dimen/one_measure_small">
 
-    <TextView
-        android:id="@+id/item_text_character_name"
-        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+    <LinearLayout
+        android:id="@+id/item_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/two_measures"
-        android:layout_marginTop="@dimen/three_measures_small"
-        android:layout_marginEnd="@dimen/two_measures"
-        android:layout_marginBottom="@dimen/three_measures_small"
-        tools:text="Character Name" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_text_character_name"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="@dimen/no_measure"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/three_measures"
+            android:layout_marginTop="@dimen/three_measures_small"
+            android:layout_marginBottom="@dimen/three_measures_small"
+            android:layout_weight="8"
+            tools:text="Character Name" />
+
+        <ImageView
+            android:id="@+id/item_img_favorite"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="@dimen/no_measure"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/two_measures"
+            android:layout_marginTop="@dimen/three_measures_small"
+            android:layout_marginEnd="@dimen/two_measures"
+            android:layout_marginBottom="@dimen/three_measures_small"
+            android:layout_weight="1"
+            android:contentDescription="@string/content_description_button_favorite"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_favorite_border_black"
+            tools:text="Character Name" />
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

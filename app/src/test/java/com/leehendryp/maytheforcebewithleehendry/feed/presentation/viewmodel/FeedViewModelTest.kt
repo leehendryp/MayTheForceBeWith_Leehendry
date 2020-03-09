@@ -6,6 +6,7 @@ import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.FetchPeopleUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.SaveFavoriteUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.SearchCharacterUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Default
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Loading
@@ -41,6 +42,7 @@ class FeedViewModelTest {
 
     private val fetchPeopleUseCase: FetchPeopleUseCase = mockk()
     private val searchCharacterUseCase: SearchCharacterUseCase = mockk()
+    private val saveFavoriteUseCase: SaveFavoriteUseCase = mockk()
 
     private lateinit var mockedObserver: Observer<FeedState>
 
@@ -61,7 +63,7 @@ class FeedViewModelTest {
     @Before
     @Test
     fun `set up`() {
-        viewModel = FeedViewModel(fetchPeopleUseCase, searchCharacterUseCase)
+        viewModel = FeedViewModel(fetchPeopleUseCase, searchCharacterUseCase, saveFavoriteUseCase)
         createMockedObserver()
         observeViewModelState()
     }
@@ -158,5 +160,45 @@ class FeedViewModelTest {
             }
 
             assertThat((stateSlots[3] as Error).error, equalTo(error))
+        }
+
+    @Test
+    fun `should update state to loading and then to default upon successful save favorite character use case execution`() =
+        runBlocking {
+            val stateSlots = mutableListOf<FeedState>()
+
+            coEvery { saveFavoriteUseCase.execute(any()) } returns Unit
+
+            viewModel.saveFavorite(dummy)
+
+            verify(exactly = 3) { mockedObserver.onChanged(capture(stateSlots)) }
+
+            verifyOrder {
+                mockedObserver.onChanged(Default)
+                mockedObserver.onChanged(Loading)
+                mockedObserver.onChanged(Default)
+            }
+        }
+
+    @Test
+    fun `should update state to error and then to default upon failed save favorite character use case execution`() =
+        runBlocking {
+            val error = Throwable()
+            val stateSlots = mutableListOf<FeedState>()
+
+            coEvery { saveFavoriteUseCase.execute(any()) } throws error
+
+            viewModel.saveFavorite(dummy)
+
+            verify(exactly = 4) { mockedObserver.onChanged(capture(stateSlots)) }
+
+            verifyOrder {
+                mockedObserver.onChanged(Default)
+                mockedObserver.onChanged(Loading)
+                mockedObserver.onChanged(any<Error>())
+                mockedObserver.onChanged(Default)
+
+                assertThat((stateSlots[2] as Error).error, equalTo(error))
+            }
         }
 }

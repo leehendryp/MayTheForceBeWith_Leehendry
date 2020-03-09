@@ -10,4 +10,5 @@
     <string name="details_eye_color">Eye color</string>
     <string name="details_birth_year">Birth year</string>
     <string name="details_gender">Gender</string>
+    <string name="content_description_button_favorite">Button to mark as favorite</string>
 </resources>
