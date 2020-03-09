@@ -30,7 +30,7 @@ On your smartphone:
 
 * Kotlin - modern programming language for native Android development;
 * Clean Architecture - software design principles that allow for SOLID layering of the app, making the app scalable, agile and robust;
-* Test-Drive Develpment - technique that allows abstractions to be readily tested, as a way to ensure robust feature development, allowing failures to happen as soon as possible, so they can be fixed before detailed implementation;
+* Test-Driven Develpment - technique that allows abstractions to be readily tested, as a way to ensure robust feature development, allowing failures to happen as soon as possible, so they can be fixed before detailed implementation;
 * MockK - powerful unit test library for Kotlin, to ensure solid Test-Driven Development cycles;
 * MockWebServer - network test library for simulating API responses, to ensure solid Test-Driven Development cycles.
 * Retrofit 2 - HTTP client API that makes it easier to make REST API data requests;
