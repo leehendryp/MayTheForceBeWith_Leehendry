@@ -6,34 +6,23 @@ import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
 import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.SUCCESS
 import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.CLIENT_ERROR
 import com.leehendryp.maytheforcebewithleehendry.core.ResponseType.SERVER_ERROR
-import com.leehendryp.maytheforcebewithleehendry.core.StarWarsApi
 import com.leehendryp.maytheforcebewithleehendry.core.WebhookApi
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToId
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToPageNumber
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
-import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.CharacterResponse
-import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PeopleResponse
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
-import com.squareup.okhttp.mockwebserver.MockWebServer
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 private const val PEOPLE_JSON = "PeopleResponse.json"
 private const val SEARCH_JSON = "SearchPeopleResponse.json"
