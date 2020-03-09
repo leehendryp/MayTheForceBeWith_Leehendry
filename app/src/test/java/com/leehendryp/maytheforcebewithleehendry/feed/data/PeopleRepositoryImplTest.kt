@@ -105,4 +105,17 @@ class PeopleRepositoryImplTest {
             coVerify(exactly = 1) { localDataSource.searchCharacterBy(any()) }
             coVerify(exactly = 0) { remoteDataSource.searchCharacterBy(any()) }
         }
+
+    @Test
+    fun `should matching character query data from local source if remote fetch fails`() =
+        coroutineRule.runBlockingTest {
+            every { networkUtils.isInternetAvailable() } returns true
+            coEvery { remoteDataSource.searchCharacterBy(any()) } throws Exception()
+            repo.searchCharacterBy("")
+
+            coVerifyOrder {
+                remoteDataSource.searchCharacterBy(any())
+                localDataSource.searchCharacterBy(any())
+            }
+        }
 }

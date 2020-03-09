@@ -11,6 +11,7 @@ import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Fee
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Loading
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Success
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Error
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Search
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
@@ -74,7 +75,7 @@ class FeedViewModelTest {
     }
 
     @Test
-    fun `should update state to success with data and then to default upon successful use case execution`() =
+    fun `should update state to success with data and then to default upon successful fetch use case execution`() =
         runBlocking {
             val stateSlots = mutableListOf<FeedState>()
             coEvery { fetchPeopleUseCase.execute(1) } returns dummies
@@ -94,7 +95,7 @@ class FeedViewModelTest {
         }
 
     @Test
-    fun `should update state to error and then to default upon failed use case execution`() =
+    fun `should update state to error and then to default upon failed fetch use case execution`() =
         runBlocking {
             val error = Throwable()
             val stateSlots = mutableListOf<FeedState>()
@@ -113,5 +114,49 @@ class FeedViewModelTest {
             }
 
             assertThat((stateSlots[2] as Error).error, equalTo(error))
+        }
+
+    @Test
+    fun `should update state to success with data and then to default upon successful search use case execution`() =
+        runBlocking {
+            val stateSlots = mutableListOf<FeedState>()
+            coEvery { searchCharacterUseCase.execute(any()) } returns dummies
+
+            viewModel.searchCharacterBy("")
+
+            verify(exactly = 5) { mockedObserver.onChanged(capture(stateSlots)) }
+
+            verifyOrder {
+                mockedObserver.onChanged(Default)
+                mockedObserver.onChanged(Search)
+                mockedObserver.onChanged(Loading)
+                mockedObserver.onChanged(any<Success>())
+                mockedObserver.onChanged(Default)
+            }
+
+            assertThat((stateSlots[3] as Success).data, equalTo(dummies.people))
+        }
+
+    @Test
+    fun `should update state to error and then to default upon failed search use case execution`() =
+        runBlocking {
+            val error = Throwable()
+            val stateSlots = mutableListOf<FeedState>()
+
+            coEvery { searchCharacterUseCase.execute(any()) } throws error
+
+            viewModel.searchCharacterBy("")
+
+            verify(exactly = 5) { mockedObserver.onChanged(capture(stateSlots)) }
+
+            verifyOrder {
+                mockedObserver.onChanged(Default)
+                mockedObserver.onChanged(Search)
+                mockedObserver.onChanged(Loading)
+                mockedObserver.onChanged(any<Error>())
+                mockedObserver.onChanged(Default)
+            }
+
+            assertThat((stateSlots[3] as Error).error, equalTo(error))
         }
 }
