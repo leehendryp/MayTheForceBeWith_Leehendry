@@ -26,7 +26,7 @@ On your computer:
 On your smartphone:
 * Download the apk provided by me and install it directly into your Android device. This only applies to e-mail contact.
 
-#Resources used on this project:
+# Resources used on this project:
 
 * Kotlin - modern programming language for native Android development;
 * Clean Architecture - software design principles that allow for SOLID layering of the app, making the app scalable, agile and robust;
