@@ -34,10 +34,20 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun searchCharacterBy(name: String) = launchDataLoad {
-        with(searchCharacterUseCase.execute(name)) {
-            _state.toSuccess(this.people)
+    fun searchCharacterBy(name: String) {
+        _state.toSearch()
+
+        launchDataLoad {
+            with(searchCharacterUseCase.execute(name)) {
+                _state.toSuccess(this.people)
+            }
         }
+
+        resetPage()
+    }
+
+    private fun resetPage() {
+        nextPage = 1
     }
 
     private fun <T> launchDataLoad(block: suspend () -> T): Job {

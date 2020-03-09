@@ -20,17 +20,22 @@ class FeedAdapter(
         return ViewHolder(view)
     }
 
-    fun update(characters: Set<Character>) {
-        this.characters.addAll(characters)
-        notifyDataSetChanged()
-    }
-
     override fun getItemCount(): Int = characters.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentCharacter = characters.toList()[position]
         holder.bind(currentCharacter)
         holder.itemView.setOnClickListener { onClick(currentCharacter) }
+    }
+
+    fun update(characters: Set<Character>) {
+        this.characters.addAll(characters)
+        notifyDataSetChanged()
+    }
+
+    fun clearList() {
+        characters.clear()
+        notifyItemRangeRemoved(0, characters.size)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

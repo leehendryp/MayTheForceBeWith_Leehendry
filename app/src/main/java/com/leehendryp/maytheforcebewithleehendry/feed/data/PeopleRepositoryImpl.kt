@@ -14,8 +14,7 @@ class PeopleRepositoryImpl @Inject constructor(
     override suspend fun fetchPeople(page: Int): People {
         return if (networkUtils.isInternetAvailable()) {
             try {
-                remoteDataSource.fetchPeople(page)
-                    .also { save(it) }
+                remoteDataSource.fetchPeople(page).also { save(it) }
             } catch (error: Throwable) {
                 localDataSource.fetchPeople()
             }
@@ -25,8 +24,13 @@ class PeopleRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchCharacterBy(name: String): People {
-        return if (networkUtils.isInternetAvailable()) remoteDataSource.searchCharacterBy(name)
-        else localDataSource.searchCharacterBy(name)
+        return if (networkUtils.isInternetAvailable()) {
+            try {
+                remoteDataSource.searchCharacterBy(name)
+            } catch (error: Throwable) {
+                localDataSource.searchCharacterBy(name)
+            }
+        } else localDataSource.searchCharacterBy(name)
     }
 
     override suspend fun save(people: People) = localDataSource.save(people)

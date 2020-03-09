@@ -43,11 +43,10 @@
                 android:layout_marginEnd="@dimen/two_measures"
                 android:layout_marginBottom="@dimen/two_measures_small"
                 android:background="@drawable/shape_searchview"
-                app:closeIcon="@drawable/ic_close_white"
+                app:closeIcon="@drawable/ic_close_black"
                 app:iconifiedByDefault="false"
                 app:queryHint="@string/search_hint"
-                app:searchIcon="@drawable/ic_search_unfocused" />
-
+                app:searchIcon="@drawable/ic_search_black" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
