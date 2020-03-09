@@ -5,7 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 const val WEBHOOK_BASE_URL = "https://webhook.site/"
-private const val WEBHOOK_ENDPOINT = "03e4c305-73aa-4d2c-8626-557687f2c393"
+private const val WEBHOOK_ENDPOINT = "f78642bb-50b6-44de-b1f3-8153cf6a2c61"
 
 interface WebhookApi {
     @POST(WEBHOOK_ENDPOINT)
