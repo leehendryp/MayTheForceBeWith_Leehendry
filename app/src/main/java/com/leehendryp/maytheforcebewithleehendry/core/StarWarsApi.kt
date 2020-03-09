@@ -5,14 +5,15 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 const val BASE_URL = "https://swapi.co/api/"
+const val PEOPLE_ENDPOINT = "people/"
 
 interface StarWarsApi {
-    @GET("people/")
+    @GET(PEOPLE_ENDPOINT)
     suspend fun fetchPeople(
-        @Query("page") offset: Int
+        @Query("page") page: Int
     ): PeopleResponse
 
-    @GET("people/")
+    @GET(PEOPLE_ENDPOINT)
     suspend fun searchCharacterBy(
         @Query("search") name: String
     ): PeopleResponse
