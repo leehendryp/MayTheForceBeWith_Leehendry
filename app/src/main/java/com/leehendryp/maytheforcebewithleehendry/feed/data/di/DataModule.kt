@@ -1,8 +1,10 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.data.di
 
 import android.content.Context
-import com.leehendryp.maytheforcebewithleehendry.core.BASE_URL
+import com.leehendryp.maytheforcebewithleehendry.core.STAR_WARS_BASE_URL
 import com.leehendryp.maytheforcebewithleehendry.core.StarWarsApi
+import com.leehendryp.maytheforcebewithleehendry.core.WEBHOOK_BASE_URL
+import com.leehendryp.maytheforcebewithleehendry.core.WebhookApi
 import com.leehendryp.maytheforcebewithleehendry.core.utils.NetworkUtils
 import com.leehendryp.maytheforcebewithleehendry.feed.data.LocalDataSource
 import com.leehendryp.maytheforcebewithleehendry.feed.data.remote.RemoteDataSource
@@ -43,15 +45,27 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideNetworkService(okHttpClient: OkHttpClient): StarWarsApi = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+    fun provideStarWarsNetworkService(okHttpClient: OkHttpClient): StarWarsApi = Retrofit.Builder()
+        .baseUrl(STAR_WARS_BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(StarWarsApi::class.java)
 
+    @Singleton
     @Provides
-    fun provideRemoteDataSource(api: StarWarsApi): RemoteDataSource = RemoteDataSourceImpl(api)
+    fun provideWebhookNetworkService(okHttpClient: OkHttpClient): WebhookApi = Retrofit.Builder()
+        .baseUrl(WEBHOOK_BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(WebhookApi::class.java)
+
+    @Provides
+    fun provideRemoteDataSource(
+        starWarsApi: StarWarsApi,
+        webhookApi: WebhookApi
+    ): RemoteDataSource = RemoteDataSourceImpl(starWarsApi, webhookApi)
 
     @Provides
     fun provideNetworkUtils(context: Context): NetworkUtils = NetworkUtils(context)
