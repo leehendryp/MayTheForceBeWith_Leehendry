@@ -39,7 +39,7 @@ On your smartphone:
 * Stateful MVVM - presentation design pattern that allows better UI state control, ensuring reactive UI events based on ViewModel data changes; 
 * LiveData - lifecycle-aware data holder observable, for creating a reactive app;
 * Dagger2 - dependency injection framework that ensures static compile-time dependency injection, allowing injection errors to be caught before users ever have a chance to do so; 
-* ViewBinging - feature that ensures null-safety on calling views from a given layout;
+* ViewBinding - feature that ensures null-safety on calling views from a given layout;
 * Ktlint - linter to ensure Kotlin usage and codestyle consistency throughout the app;
 * GitFlow - branching model workflow that allows better control over the integration and delivery of production and development code;
 * Rebase - git feature that allows organizing a git history in such a way that development story may be clearly told, over a confusing development history;
