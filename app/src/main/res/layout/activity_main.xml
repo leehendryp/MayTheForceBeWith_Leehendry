@@ -1,18 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coord_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.leehendryp.maytheforcebewithleehendry.MainActivity">
+    android:background="@color/colorPrimaryDark"
+    tools:context=".feed.presentation.view.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:elevation="@dimen/no_measure">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/text_list_title"
+            style="@style/TextAppearance.MaterialComponents.Headline4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/two_measures"
+            android:layout_marginTop="@dimen/four_measures"
+            android:layout_marginEnd="@dimen/two_measures"
+            android:layout_marginBottom="@dimen/three_measures"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:text="@string/headline_character_list"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_scrollFlags="scroll|enterAlways|snap" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/two_measures"
+                android:layout_marginEnd="@dimen/two_measures"
+                android:layout_marginBottom="@dimen/two_measures_small"
+                android:background="@drawable/shape_searchview"
+                app:closeIcon="@drawable/ic_close_black"
+                app:iconifiedByDefault="false"
+                app:queryHint="@string/search_hint"
+                app:searchIcon="@drawable/ic_search_black" />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_characters"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/two_measures_small"
+        android:paddingBottom="@dimen/two_measures"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/item_feed" />
+
+    <FrameLayout
+        android:id="@+id/container_loading_wheel"
+        android:layout_width="@dimen/nine_measures"
+        android:layout_height="@dimen/nine_measures"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_round_borders"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ProgressBar
+            android:id="@+id/loading_wheel"
+            android:layout_width="@dimen/six_measures"
+            android:layout_height="@dimen/six_measures"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

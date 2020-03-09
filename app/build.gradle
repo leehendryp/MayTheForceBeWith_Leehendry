@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -15,6 +16,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        dataBinding.enabled = true
         viewBinding.enabled = true
     }
 
@@ -23,6 +25,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = rootProject.jvmTarget
     }
 
 }
@@ -43,8 +54,7 @@ dependencies {
 
 
     // Jetpack Components
-    annotationProcessor "androidx.databinding:databinding-compiler:$rootProject.databindingVersion"
-    annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
@@ -58,9 +68,12 @@ dependencies {
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$rootProject.retrofitCoroutinesVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitGsonVersion"
 
-    // Koin
-    implementation "org.koin:koin-core:$rootProject.koinVersion"
-    implementation "org.koin:koin-core-ext:$rootProject.koinVersion"
+    // Dagger
+    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
 
     // Tests
     implementation "com.squareup.okhttp:mockwebserver:$rootProject.mockWebServerVersion"
@@ -71,8 +84,6 @@ dependencies {
 
     implementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
     testImplementation "androidx.room:room-testing:$rootProject.roomVersion"
-
-    testImplementation "org.koin:koin-test:$rootProject.koinVersion"
 
     testImplementation "junit:junit:$rootProject.jUnitVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.extJUnitVersion"
