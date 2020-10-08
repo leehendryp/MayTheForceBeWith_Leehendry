@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.leehendryp.maytheforcebewithleehendry.R
-import com.leehendryp.maytheforcebewithleehendry.core.MayTheFoceBeWithThisApplication
+import com.leehendryp.maytheforcebewithleehendry.core.MayTheForceBeWithThisApplication
 import com.leehendryp.maytheforcebewithleehendry.core.extensions.fadeIn
 import com.leehendryp.maytheforcebewithleehendry.core.extensions.vanish
 import com.leehendryp.maytheforcebewithleehendry.databinding.ActivityMainBinding
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun injectDependencies() =
-        (application as MayTheFoceBeWithThisApplication).appComponent.inject(this)
+        (application as MayTheForceBeWithThisApplication).appComponent.inject(this)
 
     private fun observeViewModel() {
         feedViewModel.state.observe(this, Observer(::updateUI))

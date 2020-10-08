@@ -6,6 +6,7 @@ import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleEr
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSavePeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.LocalDataSource
+import com.leehendryp.maytheforcebewithleehendry.feed.data.remote.Resource
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
 import javax.inject.Inject
@@ -17,11 +18,21 @@ class LocalDataSourceImpl @Inject constructor(
         private const val LOCAL_SOURCE_ERROR = "Failed to fetch data from local source"
     }
 
-    override suspend fun fetchPeople(): People = coTryCatch(
-        dispatcher = io(),
-        onTry = { People(count = getLocalCharacters().size, people = getLocalCharacters()) },
-        onCatch = { CouldNotFetchPeopleError(LOCAL_SOURCE_ERROR, it) }
-    )
+    override suspend fun fetchPeople(): Resource<People, Throwable> {
+        var people: People? = null
+        var error: Throwable? = null
+
+        try {
+            people = People(count = getLocalCharacters().size, people = getLocalCharacters())
+        } catch (cause: Throwable) {
+            error = cause
+        }
+
+        return Resource<People, Throwable>().apply {
+            people?.let { setData(it) }
+            error?.let { setError(it) }
+        }
+    }
 
     override suspend fun searchCharacterBy(name: String): People = coTryCatch(
         dispatcher = io(),

@@ -1,6 +1,7 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,11 +28,13 @@ class FeedViewModel @Inject constructor(
     }
 
     fun fetchPeople() {
-        nextPage?.let {
+        nextPage?.let { page ->
             launchDataLoad {
-                with(fetchPeopleUseCase.execute(it)) {
-                    nextPage = next
-                    _state.toSuccess(this.people)
+                with(fetchPeopleUseCase.execute(page)) {
+                    nextPage = data.value?.next
+
+                    data.value?.people?.let { _state.toSuccess(it) }
+                    error.value?.let { _state.toError(it) }
                 }
             }
         }
