@@ -5,7 +5,7 @@ import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToPag
 import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.CharacterResponse
 import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PeopleResponse
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
 
 private const val NO_ID = -1
 
@@ -21,10 +21,10 @@ fun CharacterResponse.toCharacter() = Character(
     id = url?.let { parseToId(it) } ?: NO_ID
 )
 
-fun PeopleResponse.toPeople() = People(
+fun PeopleResponse.toPeople() = Page(
     count = count ?: 0,
     next = next?.let { parseToPageNumber(it) },
-    people = results?.toCharacterList() ?: listOf()
+    characters = results?.toCharacterList() ?: listOf()
 )
 
 fun List<CharacterResponse>.toCharacterList(): List<Character> {

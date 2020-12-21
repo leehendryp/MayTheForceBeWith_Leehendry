@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.FetchPeopleUseCase
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.SaveFavoriteUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.SearchCharacterUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Default
@@ -58,7 +58,7 @@ class FeedViewModelTest {
         id = 11
     )
 
-    private val dummies = People(1, 3, listOf(dummy).sortedBy { it.id })
+    private val dummies = Page(1, 3, listOf(dummy).sortedBy { it.id })
 
     @Before
     @Test
@@ -93,7 +93,7 @@ class FeedViewModelTest {
                 mockedObserver.onChanged(Default)
             }
 
-            assertThat((stateSlots[2] as Success).data, equalTo(dummies.people))
+            assertThat((stateSlots[2] as Success).data, equalTo(dummies.characters))
         }
 
     @Test
@@ -136,7 +136,7 @@ class FeedViewModelTest {
                 mockedObserver.onChanged(Default)
             }
 
-            assertThat((stateSlots[3] as Success).data, equalTo(dummies.people))
+            assertThat((stateSlots[3] as Success).data, equalTo(dummies.characters))
         }
 
     @Test

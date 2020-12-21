@@ -1,11 +1,12 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.presentation.view
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,14 +19,11 @@ import com.leehendryp.maytheforcebewithleehendry.databinding.ActivityMainBinding
 import com.leehendryp.maytheforcebewithleehendry.details.DetailsActivity
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character.Companion.CHARACTER
-import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState
-import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Success
-import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Error
-import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Search
-import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Loading
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Action
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Action.Fetch
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedViewModel
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.UIState
 import javax.inject.Inject
-import androidx.appcompat.widget.SearchView.OnQueryTextListener
 
 class MainActivity : AppCompatActivity() {
     @Inject
@@ -44,26 +42,27 @@ class MainActivity : AppCompatActivity() {
         observeViewModel()
         initRecyclerView()
         initSearchView()
+        feedViewModel.dispatch(Fetch(1))
     }
 
     private fun initRecyclerView() {
         feedAdapter = FeedAdapter(mutableSetOf(),
             onClick = { showCharacterDetails(it) },
-            onSaveFavorite = { saveFavorite(it) }
+            onSaveFavorite = { showCharacterDetails(it) }
         )
 
         binding.recyclerviewCharacters.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = feedAdapter
-            doOnScrollToEnd { feedViewModel.fetchPeople() }
+            // doOnScrollToEnd { feedViewModel.fetchPeople() }
         }
     }
 
     private fun initSearchView() {
         binding.searchBar
             .apply {
-                doOnQuerySubmit { feedViewModel.searchCharacterBy(it) }
-                setOnQueryTextFocusChangeListener { _, hasFocus -> if (!hasFocus) feedViewModel.fetchPeople() }
+                //doOnQuerySubmit { feedViewModel.searchCharacterBy(it) }
+                //setOnQueryTextFocusChangeListener { _, hasFocus -> if (!hasFocus) feedViewModel.fetchPeople() }
             }
     }
 
@@ -74,19 +73,18 @@ class MainActivity : AppCompatActivity() {
         feedViewModel.state.observe(this, Observer(::updateUI))
     }
 
-    private fun updateUI(state: FeedState) {
+    private fun updateUI(state: UIState) {
         toggleLoading()
         when (state) {
-            Search -> clearAdapterList()
-            is Success -> updateAdapterData()
-            is Error -> showErrorMessage()
+            is UIState.Success -> updateAdapterData()
+            is UIState.Failure -> showErrorMessage()
         }
     }
 
     private fun clearAdapterList() = feedAdapter.clearList()
 
     private fun updateAdapterData() {
-        feedAdapter.update((feedViewModel.state.value as Success).data.toSet())
+        feedAdapter.update((feedViewModel.state.value as UIState.Success).data.characters.toSet())
     }
 
     private fun showErrorMessage() {
@@ -96,7 +94,9 @@ class MainActivity : AppCompatActivity() {
     private fun toggleLoading() {
         val animDuration: Long = 700
         binding.containerLoadingWheel.apply {
-            if (feedViewModel.state.value == Loading) fadeIn(animDuration) else vanish(animDuration)
+            if (feedViewModel.state.value == UIState.Loading) fadeIn(animDuration) else vanish(
+                animDuration
+            )
         }
     }
 
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun saveFavorite(character: Character) = feedViewModel.saveFavorite(character)
+    //private fun saveFavorite(character: Character) = feedViewModel.saveFavorite(character)
 
     private fun RecyclerView.doOnScrollToEnd(onLoadMore: () -> Unit) {
         this.addOnScrollListener(EndlessOnScrollListener(onLoadMore))

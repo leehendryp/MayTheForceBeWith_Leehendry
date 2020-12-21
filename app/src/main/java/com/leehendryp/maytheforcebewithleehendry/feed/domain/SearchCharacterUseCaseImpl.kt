@@ -4,5 +4,5 @@ import javax.inject.Inject
 
 class SearchCharacterUseCaseImpl
 @Inject constructor(private val peopleRepository: PeopleRepository) : SearchCharacterUseCase {
-    override suspend fun execute(query: String): People = peopleRepository.searchCharacterBy(query)
+    override suspend fun execute(query: String): Page = peopleRepository.searchCharacterBy(query)
 }

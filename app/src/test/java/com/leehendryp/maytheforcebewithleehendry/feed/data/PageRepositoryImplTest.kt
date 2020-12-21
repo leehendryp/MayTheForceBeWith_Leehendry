@@ -23,7 +23,7 @@ import java.lang.Exception
 // For more info, check: https://github.com/Kotlin/kotlinx.coroutines/issues/1626
 
 @ExperimentalCoroutinesApi
-class PeopleRepositoryImplTest {
+class PageRepositoryImplTest {
     @get:Rule
     val coroutineRule = MainCoroutineRule()
 
