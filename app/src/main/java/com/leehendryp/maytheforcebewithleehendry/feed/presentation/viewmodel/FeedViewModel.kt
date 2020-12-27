@@ -1,23 +1,30 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.leehendryp.maytheforcebewithleehendry.feed.data.remote.Resource
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.FetchPeopleUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.SaveFavoriteUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.SearchCharacterUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Action.CloseFailureDialog
-import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Action.Fetch
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Action.FetchNext
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Action.Init
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.Action.ScrollDown
-import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.UIState.*
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.UIState.Failure
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.UIState.Idle
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.UIState.Loading
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.UIState.PageLoaded
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
+
+private const val FIRST_PAGE = 1
 
 class FeedViewModel @Inject constructor(
     private val fetchPageUseCase: FetchPeopleUseCase,
@@ -25,48 +32,55 @@ class FeedViewModel @Inject constructor(
     private val saveFavoriteUseCase: SaveFavoriteUseCase
 ) : ViewModel() {
 
-    private val action by lazy { MutableLiveData<Action>(Fetch(1)) }
+    private val action by lazy { MutableLiveData<Action>(Init) }
+
     fun dispatch(action: Action) {
         this.action.value = action
     }
 
-    val state: LiveData<UIState> by lazy { switchMap(action) { process(it) } }
-    private fun process(action: Action) = MediatorLiveData<UIState>().apply {
-        Loading
-        when (action) {
-            is Fetch -> fetch(action.page)
-            is ScrollDown -> Idle
-            is CloseFailureDialog -> Idle
-            else -> Idle
-        }
-    }
-
-    private fun MediatorLiveData<UIState>.fetch(page: Int) {
-        viewModelScope.launch {
-            addSourcesFrom(fetchPageUseCase.execute(page))
-        }
-    }
-
-    private fun MediatorLiveData<UIState>.fetchNext() {
-        // E QUANDO HOUVER ERRO NO MEIO?
-        // COM FLOW, DÁ PRA RECUPERAR A ÚLTIMA EMISSÃO DE SUCESSO E USAR O NÚMERO DE NOVO
-        val nextPage = (state.value as PageLoaded).data.next
-
-        nextPage?.let {
-            viewModelScope.launch {
-                addSourcesFrom(fetchPageUseCase.execute(it))
+    val state: Flow<UIState> by lazy {
+        flow<UIState> {
+            Loading
+            when (action.value) {
+                Init -> fetch(FIRST_PAGE)
+                FetchNext -> fetch(nextPage())
+                is ScrollDown -> Idle
+                is CloseFailureDialog -> Idle
+                else -> Idle
             }
         }
     }
 
-    private fun MediatorLiveData<UIState>.addSourcesFrom(resource: Resource<Page>) {
-        with(resource) {
-            addSource(data) { page -> emit(PageLoaded(page)) }
-            addSource(error) { error -> emit(Failure(error)) }
+    private fun fetch(nextPage: Int?): UIState {
+        var currentState: UIState = Loading
+
+        launch {
+            nextPage?.let {
+                with(fetchPageUseCase.execute(it)) {
+                    data.value?.let { result -> currentState = PageLoaded(result) }
+                    error.value?.let { error -> currentState = Failure(error) }
+                }
+            }
         }
+
+        return currentState
     }
 
-    private fun <T> emit(data: T): LiveData<T> = liveData { emit(data) }
+    private suspend fun nextPage(): Int? {
+        var nextPage: Int? = null
+
+        launch(IO) {
+            val lastPageLoaded = state.toList().findLast { it is PageLoaded }
+            nextPage = (lastPageLoaded as PageLoaded).data.next
+        }
+
+        return nextPage
+    }
+
+    private fun launch(
+        context: CoroutineContext = Default,
+        block: suspend () -> Unit
+    ) = viewModelScope.launch(context) { block() }
 }
 
 sealed class UIState {
@@ -77,7 +91,8 @@ sealed class UIState {
 }
 
 sealed class Action {
-    data class Fetch(val page: Int) : Action()
+    object Init : Action()
+    object FetchNext : Action()
     data class Search(val query: String) : Action()
     object CloseFailureDialog : Action()
     object ScrollDown : Action()
