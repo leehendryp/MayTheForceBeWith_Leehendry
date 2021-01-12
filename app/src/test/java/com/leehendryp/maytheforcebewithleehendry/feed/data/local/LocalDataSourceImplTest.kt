@@ -5,7 +5,7 @@ import com.leehendryp.maytheforcebewithleehendry.core.MainCoroutineRule
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.LocalDataSource
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.spyk
@@ -56,12 +56,12 @@ class LocalDataSourceImplTest {
         id = 11111
     )
 
-    private val dummies = People(
+    private val dummies = Page(
         count = 2,
-        people = listOf(dummyOne, dummyTwo)
+        characters = listOf(dummyOne, dummyTwo)
     )
 
-    private val roomPeople = RoomPeople(people = dummies.people)
+    private val roomPeople = RoomPeople(people = dummies.characters)
 
     @Before
     @Test
@@ -71,7 +71,7 @@ class LocalDataSourceImplTest {
 
     @Test
     fun `should fetch people stored locally upon request`() = runBlocking {
-        val expectedPeople = People(count = dummies.people.size, people = dummies.people)
+        val expectedPeople = Page(count = dummies.characters.size, characters = dummies.characters)
 
         coEvery { roomPeopleDao.getAll() } returns roomPeople
 

@@ -1,72 +1,78 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.leehendryp.maytheforcebewithleehendry.core.Resource
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.FetchPeopleUseCase
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.SaveFavoriteUseCase
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.SearchCharacterUseCase
-import kotlinx.coroutines.Job
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.CloseFailureDialog
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.Init
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.LoadMore
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.ContentLoaded
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Failure
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Loading
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FeedViewModel @Inject constructor(
-    private val fetchPeopleUseCase: FetchPeopleUseCase,
-    private val searchCharacterUseCase: SearchCharacterUseCase,
-    private val saveFavoriteUseCase: SaveFavoriteUseCase
+    private val fetchPageUseCase: FetchPeopleUseCase
 ) : ViewModel() {
-    private val _state by lazy { MutableLiveData<FeedState>().apply { toDefault() } }
-    val state: LiveData<FeedState> = _state
 
-    private var nextPage: Int? = 1
+    private val feedAction by lazy { MutableLiveData<FeedAction>(Init) }
 
-    init {
-        fetchPeople()
+    private val content by lazy { MutableLiveData<Content>() }
+
+    val state: LiveData<FeedState> by lazy { switchMap(feedAction) { process(it) } }
+
+    fun dispatch(action: FeedAction) {
+        feedAction.value = action
     }
 
-    fun fetchPeople() {
-        nextPage?.let {
-            launchDataLoad {
-                with(fetchPeopleUseCase.execute(it)) {
-                    nextPage = next
-                    _state.toSuccess(this.people)
-                }
+    private fun process(action: FeedAction) = MediatorLiveData<FeedState>().apply {
+        when (action) {
+            Init -> fetch(1)
+            LoadMore -> fetch(nextPage())
+            is CloseFailureDialog -> reestablishContent()
+        }
+    }
+
+    private fun MediatorLiveData<FeedState>.fetch(page: Int?) {
+        page?.let {
+            value = Loading
+            viewModelScope.launch {
+                addSourcesFrom(fetchPageUseCase.execute(it))
             }
         }
     }
 
-    fun searchCharacterBy(name: String) {
-        _state.toSearch()
+    private fun MediatorLiveData<FeedState>.reestablishContent() {
+        value = ContentLoaded(content.value ?: Content(setOf(), 1))
+    }
 
-        launchDataLoad {
-            with(searchCharacterUseCase.execute(name)) {
-                _state.toSuccess(this.people)
+    private fun MediatorLiveData<FeedState>.addSourcesFrom(resource: Resource<Page>) {
+        with(resource) {
+            addSource(data) { page ->
+                var characters: Set<Character>? = null
+                viewModelScope.launch { characters = page.characters.toSet() }
+
+                value = ContentLoaded(Content(characters ?: setOf(), page.next))
+                    .also { updateContent(it) }
+            }
+
+            addSource(error) { error ->
+                value = Failure(error)
             }
         }
-
-        resetPage()
     }
 
-    fun saveFavorite(character: Character) = launchDataLoad {
-        saveFavoriteUseCase.execute(character)
-    }
+    private fun nextPage(): Int? = content.value?.nextPage
 
-    private fun resetPage() {
-        nextPage = 1
-    }
-
-    private fun <T> launchDataLoad(block: suspend () -> T): Job {
-        _state.toLoading()
-        return viewModelScope.launch {
-            try {
-                block()
-            } catch (error: Throwable) {
-                _state.toError(error)
-            } finally {
-                _state.toDefault()
-            }
-        }
+    private fun updateContent(contentLoaded: ContentLoaded) {
+        content.value = contentLoaded.content
     }
 }

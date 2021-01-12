@@ -15,7 +15,7 @@ import org.junit.Test
 // For more info, check: https://github.com/Kotlin/kotlinx.coroutines/issues/1626
 
 @ExperimentalCoroutinesApi
-class FetchPeopleUseCaseImplTest {
+class FetchPageUseCaseImplTest {
     @get:Rule
     val coroutineRule = MainCoroutineRule()
 

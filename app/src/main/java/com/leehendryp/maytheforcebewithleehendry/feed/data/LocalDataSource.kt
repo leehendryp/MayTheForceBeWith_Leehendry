@@ -1,11 +1,11 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.data
 
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
 
 interface LocalDataSource {
-    suspend fun fetchPeople(): People
+    suspend fun fetchPeople(): Page
 
-    suspend fun searchCharacterBy(name: String): People
+    suspend fun searchCharacterBy(name: String): Page
 
-    suspend fun save(people: People)
+    suspend fun save(page: Page)
 }

@@ -11,4 +11,7 @@
     <string name="details_birth_year">Birth year</string>
     <string name="details_gender">Gender</string>
     <string name="content_description_button_favorite">Button to mark as favorite</string>
+
+    <string name="error_title">Sorry, an error occurred</string>
+    <string name="error_retry">Please, try again.</string>
 </resources>

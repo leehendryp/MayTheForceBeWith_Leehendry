@@ -1,20 +1,18 @@
 #!/bin/bash
 
 red='\033[0;31m'
-blue='\033[01;34m'
 bold=$(tput bold)
 regular=$(tput sgr0)
-commit_aborted="${red}${bold}COMMIT ABORTED${regular}"
+commit_aborted="${red}${bold}COMMIT ABORTED: NON-COMPLIANT COMMIT MESSAGE.${regular}"
 current_line=0
 
 function abort {
-        echo -e $commit_aborted
+        echo -e "$commit_aborted"
         exit 1
 }
 
-function checkValidtype {
+function checkValidType {
         case $line in
-		"wip("*"): "* ) ;;
                 "feat("*"): "* ) ;;
                 "fix("*"): "* ) ;;
                 "docs("*"): "* ) ;;
@@ -22,6 +20,7 @@ function checkValidtype {
                 "refactor("*"): "* ) ;;
                 "test("*"): "* ) ;;
                 "chore("*"): "* ) ;;
+		"wip("*"): "* ) ;;
                 *)
 
                 echo "error: commit type not allowed"
@@ -42,9 +41,9 @@ function checkValidtype {
 
 while IFS='' read -r line || [[ -n "$line" ]]; do
         length=${#line}
-        last_position=$(($length-1))
-        last_char=${line:$last_position:1}
-        current_line=$(($current_line+1))
+        last_position=$((length-1))
+        last_char=${line:last_position:1}
+        current_line=$((current_line+1))
 
  if [ $current_line -eq 1 ]; then # checking subject
         # Last character must not have punctuation
@@ -54,7 +53,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
         fi 
 
         # Check if the commit message contains a valid type
-        checkValidtype
+        checkValidType
 
         # Cannot have capital letters
         if [[ $line =~ [A-Z] ]]; then
@@ -62,26 +61,26 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
                 abort
         fi
 
-        # Commit message cannot exceed 70 characters
-        if [ $length -gt 70 ]; then
-                echo "info: commit messages are limited to 70 characters"
+        # Commit message cannot exceed 100 characters
+        if [ "$length" -gt 100 ]; then
+                echo "info: commit messages are limited to 100 characters"
                 echo "error: the following commit message has ${#line} characters"
                 abort
         fi
 
  elif  [ $current_line -eq 2 ]; then # checking empty line
-        if [ $length -ne 0 ]; then
+        if [ "$length" -ne 0 ]; then
                 echo "error: subject should be followed by a blank line"
                 abort  
         fi
 
  elif [ $current_line -eq 3 ]; then # checking body
-	# Commit message cannot exceed 80 characters
-        if [ $length -gt 80 ]; then
-                echo "info: body commit messages are limited to 80 characters"
+	# Commit message cannot exceed 100 characters
+        if [ "$length" -gt 100 ]; then
+                echo "info: body commit messages are limited to 100 characters"
                 echo "error: the following body commit message has ${#line} characters"
                 abort
-	elif [ $length -eq 0 ]; then
+	elif [ "$length" -eq 0 ]; then
 	   	echo "error: body should not be a blank line"
                 abort
 	fi

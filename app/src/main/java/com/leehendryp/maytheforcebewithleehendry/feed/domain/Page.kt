@@ -1,7 +1,7 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.domain
 
-data class People(
+data class Page(
     val count: Int,
     val next: Int? = null,
-    val people: List<Character>
+    val characters: List<Character>
 )

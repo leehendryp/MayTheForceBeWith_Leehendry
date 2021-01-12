@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.leehendryp.maytheforcebewithleehendry">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- TODO PROPERLY SET UP CLEAR TEXT HTTP COMM CONFIG-->
 
     <application
         android:name=".core.MayTheFoceBeWithThisApplication"
@@ -14,8 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".details.DetailsActivity"></activity>
+        <activity android:name=".details.DetailsActivity"/>
         <activity
             android:name=".feed.presentation.view.MainActivity"
             android:screenOrientation="portrait"

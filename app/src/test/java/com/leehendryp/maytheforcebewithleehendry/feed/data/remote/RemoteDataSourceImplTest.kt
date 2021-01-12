@@ -13,7 +13,7 @@ import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToPag
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotFetchPeopleError
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSearchCharacterError
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
-import com.leehendryp.maytheforcebewithleehendry.feed.domain.People
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -68,10 +68,10 @@ class RemoteDataSourceImplTest : BaseNetworkTest() {
         id = mockId
     )
 
-    private val dummies = People(
+    private val dummies = Page(
         count = 2,
         next = 3,
-        people = listOf(dummyOne, dummyTwo)
+        characters = listOf(dummyOne, dummyTwo)
     )
 
     @Test
@@ -88,7 +88,7 @@ class RemoteDataSourceImplTest : BaseNetworkTest() {
 
         setResponse(SUCCESS, PEOPLE_JSON)
 
-        val result: People = dataSource.fetchPeople(2)
+        val result: Page = dataSource.fetchPeople(2)
 
         assertThat(result, equalTo(dummies))
     }
@@ -118,7 +118,7 @@ class RemoteDataSourceImplTest : BaseNetworkTest() {
 
             setResponse(SUCCESS, SEARCH_JSON)
 
-            val result: People = dataSource.searchCharacterBy("")
+            val result: Page = dataSource.searchCharacterBy("")
 
             assertThat(result, equalTo(dummies))
         }
