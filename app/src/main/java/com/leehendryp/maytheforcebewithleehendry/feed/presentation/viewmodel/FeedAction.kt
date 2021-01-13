@@ -4,4 +4,5 @@ sealed class FeedAction {
     object Init : FeedAction()
     object LoadMore : FeedAction()
     object CloseFailureDialog : FeedAction()
+    data class Search(val query: String) : FeedAction()
 }

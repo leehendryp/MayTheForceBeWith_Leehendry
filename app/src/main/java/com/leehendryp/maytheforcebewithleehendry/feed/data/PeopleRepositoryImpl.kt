@@ -15,26 +15,20 @@ class PeopleRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource
 ) : PeopleRepository {
     override suspend fun fetchPeople(page: Int): Resource<Page> {
-        //return remoteDataSource.fetchPeople(page)
+        return remoteDataSource.fetchPeople(page)
 
         //Para fins de apresentação:
-        val randomNumber = Random.nextInt(1, 3)
-
-        return if ((randomNumber % 2) == 1) {
-            Resource<Page>().apply { setError(Exception()) }
-        } else {
-            remoteDataSource.fetchPeople(page)
-        }
+        //val randomNumber = Random.nextInt(1, 3)
+        //
+        //        return if ((randomNumber % 2) == 1) {
+        //            Resource<Page>().apply { setError(Exception()) }
+        //        } else {
+        //            remoteDataSource.fetchPeople(page)
+        //        }
     }
 
-    override suspend fun searchCharacterBy(name: String): Page {
-        return if (networkUtils.isInternetAvailable()) {
-            try {
-                remoteDataSource.searchCharacterBy(name)
-            } catch (error: Throwable) {
-                localDataSource.searchCharacterBy(name)
-            }
-        } else localDataSource.searchCharacterBy(name)
+    override suspend fun searchCharacterBy(name: String): Resource<Page> {
+        return remoteDataSource.searchCharacterBy(name)
     }
 
     override suspend fun save(page: Page) = localDataSource.save(page)

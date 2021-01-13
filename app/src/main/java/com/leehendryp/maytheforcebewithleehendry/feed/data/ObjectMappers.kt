@@ -3,7 +3,7 @@ package com.leehendryp.maytheforcebewithleehendry.feed.data
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToId
 import com.leehendryp.maytheforcebewithleehendry.core.utils.UriParser.parseToPageNumber
 import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.CharacterResponse
-import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PeopleResponse
+import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PageResponse
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
 
@@ -21,7 +21,7 @@ fun CharacterResponse.toCharacter() = Character(
     id = url?.let { parseToId(it) } ?: NO_ID
 )
 
-fun PeopleResponse.toPeople() = Page(
+fun PageResponse.toPeople() = Page(
     count = count ?: 0,
     next = next?.let { parseToPageNumber(it) },
     characters = results?.toCharacterList() ?: listOf()

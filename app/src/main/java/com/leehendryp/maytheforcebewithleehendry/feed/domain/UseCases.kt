@@ -7,7 +7,7 @@ interface FetchPeopleUseCase {
 }
 
 interface SearchCharacterUseCase {
-    suspend fun execute(query: String): Page
+    suspend fun execute(query: String): Resource<Page>
 }
 
 interface SaveFavoriteUseCase {

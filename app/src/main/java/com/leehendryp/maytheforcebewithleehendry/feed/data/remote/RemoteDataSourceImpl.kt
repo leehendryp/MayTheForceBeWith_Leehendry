@@ -1,14 +1,12 @@
 package com.leehendryp.maytheforcebewithleehendry.feed.data.remote
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.leehendryp.maytheforcebewithleehendry.core.Resource
 import com.leehendryp.maytheforcebewithleehendry.core.StarWarsApi
 import com.leehendryp.maytheforcebewithleehendry.core.WebhookApi
 import com.leehendryp.maytheforcebewithleehendry.core.extensions.handle
 import com.leehendryp.maytheforcebewithleehendry.core.utils.coTryCatch
 import com.leehendryp.maytheforcebewithleehendry.feed.data.CouldNotSaveFavoriteCharacterError
+import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PageResponse
 import com.leehendryp.maytheforcebewithleehendry.feed.data.toPeople
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
@@ -24,19 +22,26 @@ class RemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun fetchPeople(page: Int): Resource<Page> {
-        return try {
-            starWarsApi.fetchPeople(page)
-                .handle { response -> response.toPeople() }
-        } catch (error: Throwable) {
-            Resource<Page>()
-                .apply { setError(error) }
-        }
+        return starWarsApi.fetchPeople(page)
+            .resource()
     }
 
-    override suspend fun searchCharacterBy(name: String): Page = Page(1, 1, listOf())
+    override suspend fun searchCharacterBy(name: String): Resource<Page> {
+        return starWarsApi.searchCharacterBy(name)
+            .resource()
+    }
 
     override suspend fun saveFavorite(character: Character) = coTryCatch(
         { webhookApi.saveFavorite(character) },
         { CouldNotSaveFavoriteCharacterError(REMOTE_SOURCE_ERROR, it) }
     )
+
+    private fun Response<PageResponse>.resource(): Resource<Page> {
+        return try {
+            handle { response -> response.toPeople() }
+        } catch (error: Throwable) {
+            Resource<Page>()
+                .apply { setError(error) }
+        }
+    }
 }

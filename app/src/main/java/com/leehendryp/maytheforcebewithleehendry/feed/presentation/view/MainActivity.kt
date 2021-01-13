@@ -23,11 +23,14 @@ import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character.Companion.CHARACTER
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.CloseFailureDialog
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.Init
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.LoadMore
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.Search
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Failure
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Loading
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.ContentLoaded
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.EmptyList
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedViewModel
 import javax.inject.Inject
 
@@ -69,10 +72,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initSearchView() {
-        //binding.searchBar.apply {
-        //        doOnQuerySubmit { feedViewModel.searchCharacterBy(it) }
-        //        setOnQueryTextFocusChangeListener { _, hasFocus -> if (!hasFocus) feedViewModel.fetchPeople() }
-        //        }
+        binding.searchBar.apply {
+            doOnQuerySubmit { feedViewModel.dispatch(Search(it)) }
+            setOnQueryTextFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) feedViewModel.dispatch(Init)
+            }
+        }
     }
 
     private fun injectDependencies() =
@@ -87,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         when (state) {
             is ContentLoaded -> updateList(state)
             is Failure -> showErrorDialog()
+            EmptyList -> clearAdapterList()
             else -> Unit
         }
     }
@@ -124,7 +130,7 @@ class MainActivity : AppCompatActivity() {
     //private fun saveFavorite(character: Character) = feedViewModel.saveFavorite(character)
 
     private fun RecyclerView.doOnScrollToEnd(onLoadMore: () -> Unit) {
-        this.addOnScrollListener(EndlessOnScrollListener(onLoadMore))
+        addOnScrollListener(EndlessOnScrollListener(onLoadMore))
     }
 
     private fun SearchView.doOnQuerySubmit(block: (String) -> Unit) {

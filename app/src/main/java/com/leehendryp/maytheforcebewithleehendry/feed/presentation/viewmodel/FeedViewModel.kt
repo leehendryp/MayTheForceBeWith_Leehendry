@@ -10,17 +10,21 @@ import com.leehendryp.maytheforcebewithleehendry.core.Resource
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.FetchPeopleUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.SearchCharacterUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.CloseFailureDialog
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.Init
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.LoadMore
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.Search
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.ContentLoaded
+import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.EmptyList
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Failure
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedState.Loading
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FeedViewModel @Inject constructor(
-    private val fetchPageUseCase: FetchPeopleUseCase
+    private val fetchPageUseCase: FetchPeopleUseCase,
+    private val searchCharacterUseCase: SearchCharacterUseCase
 ) : ViewModel() {
 
     private val feedAction by lazy { MutableLiveData<FeedAction>(Init) }
@@ -33,11 +37,21 @@ class FeedViewModel @Inject constructor(
         feedAction.value = action
     }
 
-    private fun process(action: FeedAction) = MediatorLiveData<FeedState>().apply {
-        when (action) {
-            Init -> fetch(1)
-            LoadMore -> fetch(nextPage())
-            is CloseFailureDialog -> reestablishContent()
+    private fun process(action: FeedAction): MediatorLiveData<FeedState> {
+        return MediatorLiveData<FeedState>().apply {
+            when (action) {
+                Init -> fetch(1)
+                LoadMore -> fetch(nextPage())
+                CloseFailureDialog -> reestablishContent()
+                is Search -> search(action.query)
+            }
+        }
+    }
+
+    private fun MediatorLiveData<FeedState>.search(query: String) {
+        viewModelScope.launch {
+            value = EmptyList
+            addSourcesFrom(searchCharacterUseCase.execute(query))
         }
     }
 

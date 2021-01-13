@@ -1,6 +1,6 @@
 package com.leehendryp.maytheforcebewithleehendry.core
 
-import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PeopleResponse
+import com.leehendryp.maytheforcebewithleehendry.feed.data.entities.PageResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,10 +12,10 @@ interface StarWarsApi {
     @GET(PEOPLE_ENDPOINT)
     suspend fun fetchPeople(
         @Query("page") page: Int
-    ): Response<PeopleResponse>
+    ): Response<PageResponse>
 
     @GET(PEOPLE_ENDPOINT)
     suspend fun searchCharacterBy(
         @Query("search") name: String
-    ): Response<PeopleResponse>
+    ): Response<PageResponse>
 }
