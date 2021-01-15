@@ -10,6 +10,7 @@ import com.leehendryp.maytheforcebewithleehendry.core.Resource
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Character
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.FetchPeopleUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.Page
+import com.leehendryp.maytheforcebewithleehendry.feed.domain.SaveFavoriteUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.domain.SearchCharacterUseCase
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.CloseFailureDialog
 import com.leehendryp.maytheforcebewithleehendry.feed.presentation.viewmodel.FeedAction.Init
@@ -27,14 +28,14 @@ class FeedViewModel @Inject constructor(
     private val searchCharacterUseCase: SearchCharacterUseCase
 ) : ViewModel() {
 
-    private val feedAction by lazy { MutableLiveData<FeedAction>(Init) }
+    private val action by lazy { MutableLiveData<FeedAction>(Init) }
 
     private val content by lazy { MutableLiveData<Content>() }
 
-    val state: LiveData<FeedState> by lazy { switchMap(feedAction) { process(it) } }
+    val state: LiveData<FeedState> by lazy { switchMap(action) { process(it) } }
 
     fun dispatch(action: FeedAction) {
-        feedAction.value = action
+        this.action.value = action
     }
 
     private fun process(action: FeedAction): MediatorLiveData<FeedState> {
@@ -42,8 +43,8 @@ class FeedViewModel @Inject constructor(
             when (action) {
                 Init -> fetch(1)
                 LoadMore -> fetch(nextPage())
-                CloseFailureDialog -> reestablishContent()
                 is Search -> search(action.query)
+                CloseFailureDialog -> reestablishContent()
             }
         }
     }
