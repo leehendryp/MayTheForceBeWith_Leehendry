@@ -40,8 +40,7 @@ class RemoteDataSourceImpl @Inject constructor(
         return try {
             handle { response -> response.toPeople() }
         } catch (error: Throwable) {
-            Resource<Page>()
-                .apply { setError(error) }
+            Resource.Error(error = error)
         }
     }
 }
